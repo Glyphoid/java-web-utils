@@ -112,7 +112,6 @@ public final class JsonWebClient {
             }
 
             respBody = IOUtils.toString(is, isEncoding);
-            System.out.println(respBody);
         } catch (IOException exc) {
             throw new BodyReadException(
                     "IO exception occurred during body reading of the response, due to: " + exc.getMessage());
