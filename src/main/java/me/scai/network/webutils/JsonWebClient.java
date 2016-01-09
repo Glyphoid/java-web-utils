@@ -16,6 +16,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import me.scai.network.webutils.exceptions.AllAttemptsFailedException;
+import me.scai.network.webutils.exceptions.BodyParseException;
+import me.scai.network.webutils.exceptions.BodyReadException;
+import me.scai.network.webutils.exceptions.StatusException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -31,43 +35,18 @@ public final class JsonWebClient {
 
     private final static int HTTP_STATUS_OK = 200;
 
-    /* Member classes */
-    public static class StatusException extends Exception {
-        public StatusException(String msg) {
-            super(msg);
-        }
-    }
-
-    public static class BodyReadException extends Exception {
-        public BodyReadException(String msg) {
-            super(msg);
-        }
-    }
-
-    public static class BodyParseException extends Exception {
-        public BodyParseException(String msg) {
-            super(msg);
-        }
-    }
-
-    public static class AllAttemptsFailedException extends Exception {
-        public AllAttemptsFailedException(String msg) {
-            super(msg);
-        }
-    }
-
     /* Member variables */
     private static int maxNumHttpRequestRepeats = 3;
 
     /* Methods */
     public static JsonObject sendRequestAndGetResponseWithRepeats(GenericUrl url, String method, JsonObject bodyData)
-            throws StatusException, BodyReadException, BodyParseException, AllAttemptsFailedException {
+            throws AllAttemptsFailedException {
         int attemptCount = 0;
 
         while (attemptCount++ < maxNumHttpRequestRepeats) {
             try {
                 return sendRequestAndGetResponse(url, method, bodyData);
-            } catch (IOException ioExc) {}
+            } catch (Exception e) {}
         }
 
         throw new AllAttemptsFailedException("All " + maxNumHttpRequestRepeats + " attempt(s) to access endpoint " + url +
